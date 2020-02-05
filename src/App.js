@@ -1,40 +1,49 @@
 import React from 'react';
 import './App.css';
 
+const API = 'https://api.exchangeratesapi.io/latest?';
+let baseCurrency = 'base=AUD' 
+
 class App extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      currency: '',
-      value: ''
+      baseValue: '',
+      currencyData: {},
+      isLoading: false,
+      hasError: false
     }
 
-    this.handleAmountChange = this.handleAmountChange.bind(this);
+    this.handleValueChange = this.handleValueChange.bind(this);
   }
 
-  componentDidMount() {
-    fetch("https://api.exchangeratesapi.io/latest?base=AUD")
+  componentWillMount() {
+    this.setState({isLoading: true});
+
+    fetch(API + baseCurrency)
       .then(res => res.json())
-      .then(result => {this.setState({currency: result})});
+      .then(data => {this.setState({currencyData: data.rates, isLoading: false, hasError: false})});
   }
 
-  handleAmountChange(e) {
-    this.setState({value: e})
-    console.log(this.state.value);
+  handleValueChange(e) {
+    this.setState({baseValue: e})
   }
 
   render() {
-    console.log("render");
-    console.log(`${this.state.currency}`)
+      // return <p>Loading ...</p>;
+    // }
+    console.log(this.state.currencyData)
     return (
       <div className="App">
         <header className="App-header pt-5">
           <h1>Currency Converter</h1>
-            <BaseAmount value={this.handleAmountChange}/>
+            <BaseValue baseValue={this.handleValueChange}/>
           <br />
             <BaseCurrency /> 
           <br />
-          <ChildCurrency result={this.state.currency.rates} />
+          <p>baseValue: {this.state.baseValue}</p>
+          <ChildCurrency result={this.state.currencyData} />
+
         </header>
       </div>
     )
@@ -42,12 +51,6 @@ class App extends React.Component {
 }
 
 class BaseCurrency extends React.Component {
-
-  componentDidMount() {
-    fetch("https://api.exchangeratesapi.io/latest?base=AUD")
-      .then(res => res.json())
-      .then((result) => {this.setState({currency: result})});
-  }
   render() {
     return (
       <div>
@@ -65,7 +68,7 @@ class BaseCurrency extends React.Component {
   )
   }
 }
-class BaseAmount extends React.Component {
+class BaseValue extends React.Component {
   constructor(props) {
     super(props);
   
@@ -73,7 +76,7 @@ class BaseAmount extends React.Component {
   }
 
   handleChange(e) {
-    this.props.value(e.target.value);
+    this.props.baseValue(e.target.value);
   }
 
   render() {
@@ -85,17 +88,22 @@ class BaseAmount extends React.Component {
   }
 }
 
-function ChildCurrency(c) {
-    console.log(c.result)
-    return (
+class ChildCurrency extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  render(){
+    return(
       <div>
-      Child Currency
-      <br />
-        {/* {c.result} */}
-      
+        <ul>
+        </ul>
       </div>
-  
-  )
+      // <div>
+        // {this.props.result.CAD}
+      // </div>
+    )
+  }
 }
 
 export default App;
