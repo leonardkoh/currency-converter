@@ -42,7 +42,7 @@ class App extends React.Component {
             <BaseCurrency /> 
           <br />
           <p>baseValue: {this.state.baseValue}</p>
-          <ChildCurrency result={this.state.currencyData} />
+          <ChildCurrency result={this.state.currencyData} bv={this.state.baseValue}/>
 
         </header>
       </div>
@@ -93,15 +93,21 @@ class ChildCurrency extends React.Component {
     super(props)
   }
 
-  render(){
+  render() {
     return(
       <div>
         <ul>
+          {
+            Object.entries(this.props.result).map(([k,v])=> (
+              <li key={k}>
+                {k}--{this.props.bv * v}
+              </li>
+            ))
+          }
         </ul>
+        <br />
+        
       </div>
-      // <div>
-        // {this.props.result.CAD}
-      // </div>
     )
   }
 }
