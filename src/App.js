@@ -8,7 +8,7 @@ class App extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      baseValue: '0',
+      baseValue: 0,
       baseCurrency: 'AUD',
       currencyData: {},
       isLoading: false,
@@ -16,9 +16,15 @@ class App extends React.Component {
     }
 
     this.handleValueChange = this.handleValueChange.bind(this);
+    this.handleCurrencyChange = this.handleCurrencyChange.bind(this);
+    this.getCurrency = this.getCurrency.bind(this);
   }
 
   componentWillMount() {
+    this.getCurrency();
+  }
+
+  getCurrency() {
     this.setState({isLoading: true});
 
     fetch(_URL + this.state.baseCurrency)
@@ -30,50 +36,50 @@ class App extends React.Component {
     this.setState({baseValue: e})
   }
 
+  handleCurrencyChange(e) {
+    // console.log(e);
+    this.setState({baseCurrency: e})
+    // console.log(this.state.baseCurrency);
+    this.getCurrency();
+  }
+
   render() {
       // return <p>Loading ...</p>;
     // }
-    //console.log(FullCurrencyName.USD);
     return (
       <div className="App">
         <header className="AppHeader pt-5">
           <h1 className="pb-3">Currency Converter</h1>
             <BaseAmount baseValue={this.handleValueChange} />
             <div className="pt-1"></div>
-            <BaseCurrency /> 
-          {/* <p>baseValue: {this.state.baseValue}</p> */}
-            <Result result={this.state.currencyData} bv={this.state.baseValue} />
+            <BaseCurrency currencyChange={this.handleCurrencyChange} currency={this.state.baseCurrency}/> 
+            <p>{this.state.baseCurrency}</p>
+            <Result result={this.state.currencyData} bv={this.state.baseValue} currency={this.state.baseCurrency}/>
         </header>
       </div>
     )
   }
 }
 
-//requires state lift
 class BaseCurrency extends React.Component {
   constructor(props) {
     super(props);
 
     this.handleChange = this.handleChange.bind(this);
-    this.state ={
-      val: 'AUD'
-    }
   }
 
   handleChange(e) {
-    this.setState({val: e.target.value});
+    this.props.currencyChange(e.target.value);
   }
 
   render() {
-    console.log()
     return (
       <div>
-        <select className="btn btn-success" onChange={this.handleChange} value={this.state.val}>
+        <select className="btn btn-success" onChange={this.handleChange} value={this.props.currency}>
           <option value="AUD">AUD</option>
           <option value="USD">USD</option>
           <option value="CAD">CAD</option>
         </select> 
-        <p>{this.state.val}</p>
       </div>
   )
   }
@@ -104,6 +110,9 @@ class Result extends React.Component {
     super(props)
   }
   render() {
+
+    //need to handle NaN input
+
     return(
       <div className="row">
         <div className="col-3"></div>
