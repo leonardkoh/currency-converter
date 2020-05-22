@@ -4,11 +4,14 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
   color: white;
 }
 
 h1 {
   font-size: 2rem;
   font-weight: 400;
+}
+
+li {
+  list-style: none;
 }

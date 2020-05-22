@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
 
-const API = 'https://api.exchangeratesapi.io/latest?';
-let baseCurrency = 'base=AUD' 
+const _URL = 'https://api.exchangeratesapi.io/latest?base=';
+let baseCurrency = 'AUD' 
 
 class App extends React.Component {
   constructor(props){
@@ -20,7 +20,7 @@ class App extends React.Component {
   componentWillMount() {
     this.setState({isLoading: true});
 
-    fetch(API + baseCurrency)
+    fetch(_URL + baseCurrency)
       .then(res => res.json())
       .then(data => {this.setState({currencyData: data.rates, isLoading: false, hasError: false})});
   }
@@ -37,12 +37,11 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header pt-5">
           <h1>Currency Converter</h1>
-            <BaseValue baseValue={this.handleValueChange}/>
+            <BaseAmount baseValue={this.handleValueChange}/>
           <br />
             <BaseCurrency /> 
-          <br />
-          <p>baseValue: {this.state.baseValue}</p>
-          <ChildCurrency result={this.state.currencyData} bv={this.state.baseValue}/>
+          {/* <p>baseValue: {this.state.baseValue}</p> */}
+          <Result result={this.state.currencyData} bv={this.state.baseValue}/>
 
         </header>
       </div>
@@ -50,25 +49,37 @@ class App extends React.Component {
   }
 }
 
+
+//requires state lift
 class BaseCurrency extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleChange = this.handleChange.bind(this);
+    this.state ={
+      val: 'AUD'
+    }
+  }
+
+  handleChange(e) {
+    this.setState({val: e.target.value});
+  }
+
   render() {
     return (
       <div>
-      <div className="dropdown">
-  <button className="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    AUD
-  </button>
-  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a className="dropdown-item text-center">AUD</a>
-    <a className="dropdown-item text-center">USD</a>
-    <a className="dropdown-item text-center">CAD</a>
-  </div>
-</div>
+        <select className="btn btn-success" onChange={this.handleChange} value={this.state.val}>
+          <option value="AUD">AUD</option>
+          <option value="USD">USD</option>
+          <option value="CAD">CAD</option>
+        </select> 
+        <p>{this.state.val}</p>
       </div>
   )
   }
 }
-class BaseValue extends React.Component {
+
+class BaseAmount extends React.Component {
   constructor(props) {
     super(props);
   
@@ -82,31 +93,29 @@ class BaseValue extends React.Component {
   render() {
     return (
       <div>
-        <input className="" onChange={this.handleChange}></input>
+        <input placeholder="0" className="text-center" onChange={this.handleChange}></input>
       </div>
   )
   }
 }
 
-class ChildCurrency extends React.Component {
+class Result extends React.Component {
   constructor(props) {
     super(props)
   }
-
   render() {
     return(
       <div>
         <ul>
           {
-            Object.entries(this.props.result).map(([k,v])=> (
-              <li key={k}>
-                {k}--{this.props.bv * v}
+            Object.entries(this.props.result).map(([key,value])=> (
+              <li key={key}>
+                {key}: {(this.props.bv * value).toFixed(2)}
               </li>
             ))
           }
         </ul>
         <br />
-        
       </div>
     )
   }
