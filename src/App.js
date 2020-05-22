@@ -46,6 +46,7 @@ class App extends React.Component {
   render() {
       // return <p>Loading ...</p>;
     // }
+    //console.log(FullCurrencyName.USD);
     return (
       <div className="App">
         <header className="AppHeader pt-5">
@@ -73,6 +74,7 @@ class BaseCurrency extends React.Component {
   }
 
   render() {
+    console.log()
     return (
       <div>
         <select className="btn btn-success" onChange={this.handleChange} value={this.props.currency}>
