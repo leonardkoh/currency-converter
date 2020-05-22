@@ -1,17 +1,18 @@
 import React from 'react';
 import './App.css';
+import {FullCurrencyName} from './CurrencyName';
 
 const _URL = 'https://api.exchangeratesapi.io/latest?base=';
-let baseCurrency = 'AUD' 
 
 class App extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      baseValue: '',
+      baseValue: '0',
+      baseCurrency: 'AUD',
       currencyData: {},
       isLoading: false,
-      hasError: false
+      hasError: false,
     }
 
     this.handleValueChange = this.handleValueChange.bind(this);
@@ -20,7 +21,7 @@ class App extends React.Component {
   componentWillMount() {
     this.setState({isLoading: true});
 
-    fetch(_URL + baseCurrency)
+    fetch(_URL + this.state.baseCurrency)
       .then(res => res.json())
       .then(data => {this.setState({currencyData: data.rates, isLoading: false, hasError: false})});
   }
@@ -32,23 +33,21 @@ class App extends React.Component {
   render() {
       // return <p>Loading ...</p>;
     // }
-    console.log(this.state.currencyData)
+    //console.log(FullCurrencyName.USD);
     return (
       <div className="App">
-        <header className="App-header pt-5">
-          <h1>Currency Converter</h1>
-            <BaseAmount baseValue={this.handleValueChange}/>
-          <br />
+        <header className="AppHeader pt-5">
+          <h1 className="pb-3">Currency Converter</h1>
+            <BaseAmount baseValue={this.handleValueChange} />
+            <div className="pt-1"></div>
             <BaseCurrency /> 
           {/* <p>baseValue: {this.state.baseValue}</p> */}
-          <Result result={this.state.currencyData} bv={this.state.baseValue}/>
-
+            <Result result={this.state.currencyData} bv={this.state.baseValue} />
         </header>
       </div>
     )
   }
 }
-
 
 //requires state lift
 class BaseCurrency extends React.Component {
@@ -66,6 +65,7 @@ class BaseCurrency extends React.Component {
   }
 
   render() {
+    console.log()
     return (
       <div>
         <select className="btn btn-success" onChange={this.handleChange} value={this.state.val}>
@@ -105,17 +105,22 @@ class Result extends React.Component {
   }
   render() {
     return(
-      <div>
-        <ul>
+      <div className="row">
+        <div className="col-3"></div>
+        <div className="col-6">
           {
-            Object.entries(this.props.result).map(([key,value])=> (
-              <li key={key}>
-                {key}: {(this.props.bv * value).toFixed(2)}
-              </li>
+            Object.entries(this.props.result).map(([key,value])=> (<div className="row text-center">
+              <div className="col" key={key}>
+                {key}
+              </div> 
+              <div className="col">
+                {(this.props.bv * value).toFixed(2)}
+              </div>
+              </div>
             ))
           }
-        </ul>
-        <br />
+        </div>
+        <div className="col-3"></div>
       </div>
     )
   }
