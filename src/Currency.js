@@ -33,3 +33,16 @@ export const FullCurrencyName = {
     KRW: "South Korean Won",
     PLN: "Poland Złoty" 
 };
+
+export const CurrencyList = [
+    "AUD",
+    "USD",
+    "EUR",
+    "JPY",
+    "GBP",
+    "CAD",
+    "CHF",
+    "CNH",
+    "SEK",
+    "NZD"
+]

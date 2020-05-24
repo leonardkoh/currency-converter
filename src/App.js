@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {FullCurrencyName} from './CurrencyName';
+import {FullCurrencyName, CurrencyList} from './Currency';
 
 class App extends React.Component {
   constructor(props){
@@ -28,9 +28,9 @@ class App extends React.Component {
         <header className="AppHeader pt-5">
           <h1 className="pb-3">Currency Converter</h1>
             <div className="row justify-content-center">
-            <BaseAmount baseValue={this.handleValueChange} />
-            <div className="ml-2"></div>
-            <BaseCurrency currencyChange={this.handleCurrencyChange} currency={this.state.baseCurrency}/> 
+              <BaseAmount baseValue={this.handleValueChange} />
+              <div className="ml-2"></div>
+              <BaseCurrency currencyChange={this.handleCurrencyChange} currency={this.state.baseCurrency}/> 
             </div>
             <div className="mb-3"></div>
             <Result bv={this.state.baseValue} currency={this.state.baseCurrency}/>
@@ -55,9 +55,9 @@ class BaseCurrency extends React.Component {
     return (
       <div>
         <select className="btn btn-success" onChange={this.handleChange} value={this.props.currency}>
-          <option value="AUD">AUD</option>
-          <option value="USD">USD</option>
-          <option value="CAD">CAD</option>
+          { CurrencyList.map(
+            (e) => <option value={e}>{e}</option>
+          )}
         </select> 
       </div>
   )
@@ -76,14 +76,22 @@ class BaseAmount extends React.Component {
   }
 
   render() {
-    return (
-        <input placeholder="0" className="text-center" onChange={this.handleChange}></input>
-    )
+    return ( <input placeholder="0" className="text-center" onChange={this.handleChange}></input> )
   }
 }
 
-const _URL = 'https://api.exchangeratesapi.io/latest?base=';
+function ShowLoadingSpinner() {
+  return (
+    <div>
+      <h4 className="mb-3">Loading ...</h4>
+      <div class="spinner-border text-success" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  ) 
+} 
 
+const _URL = 'https://api.exchangeratesapi.io/latest?base=';
 class Result extends React.Component {
   constructor(props) {
     super(props);
@@ -91,7 +99,6 @@ class Result extends React.Component {
       lastCurrency: '',
       currencyData: {},
       isLoading: false,
-      hasError: false,
     }
 
     this.handleCurrencyChange = this.handleCurrencyChange.bind(this);
@@ -117,7 +124,8 @@ class Result extends React.Component {
   
   render() {
     if(this.state.isLoading) 
-      return (<div>Data Loading ...</div>)
+      return (<div><ShowLoadingSpinner /></div>)
+
     else
       return(
         <div className="row">
