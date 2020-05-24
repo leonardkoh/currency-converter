@@ -2,34 +2,16 @@ import React from 'react';
 import './App.css';
 import {FullCurrencyName} from './CurrencyName';
 
-const _URL = 'https://api.exchangeratesapi.io/latest?base=';
-
 class App extends React.Component {
   constructor(props){
     super(props)
     this.state = {
       baseValue: 0,
       baseCurrency: 'AUD',
-      currencyData: {},
-      isLoading: false,
-      hasError: false,
     }
 
     this.handleValueChange = this.handleValueChange.bind(this);
     this.handleCurrencyChange = this.handleCurrencyChange.bind(this);
-    this.getCurrency = this.getCurrency.bind(this);
-  }
-
-  componentWillMount() {
-    this.getCurrency();
-  }
-
-  getCurrency() {
-    this.setState({isLoading: true});
-
-    fetch(_URL + this.state.baseCurrency)
-      .then(res => res.json())
-      .then(data => {this.setState({currencyData: data.rates, isLoading: false, hasError: false})});
   }
 
   handleValueChange(e) {
@@ -37,25 +19,21 @@ class App extends React.Component {
   }
 
   handleCurrencyChange(e) {
-    // console.log(e);
     this.setState({baseCurrency: e})
-    // console.log(this.state.baseCurrency);
-    this.getCurrency();
   }
 
   render() {
-      // return <p>Loading ...</p>;
-    // }
-    //console.log(FullCurrencyName.USD);
     return (
       <div className="App">
         <header className="AppHeader pt-5">
           <h1 className="pb-3">Currency Converter</h1>
+            <div className="row justify-content-center">
             <BaseAmount baseValue={this.handleValueChange} />
-            <div className="pt-1"></div>
+            <div className="ml-2"></div>
             <BaseCurrency currencyChange={this.handleCurrencyChange} currency={this.state.baseCurrency}/> 
-            <p>{this.state.baseCurrency}</p>
-            <Result result={this.state.currencyData} bv={this.state.baseValue} currency={this.state.baseCurrency}/>
+            </div>
+            <div className="mb-3"></div>
+            <Result bv={this.state.baseValue} currency={this.state.baseCurrency}/>
         </header>
       </div>
     )
@@ -74,7 +52,6 @@ class BaseCurrency extends React.Component {
   }
 
   render() {
-    console.log()
     return (
       <div>
         <select className="btn btn-success" onChange={this.handleChange} value={this.props.currency}>
@@ -100,40 +77,68 @@ class BaseAmount extends React.Component {
 
   render() {
     return (
-      <div>
         <input placeholder="0" className="text-center" onChange={this.handleChange}></input>
-      </div>
-  )
+    )
   }
 }
 
+const _URL = 'https://api.exchangeratesapi.io/latest?base=';
+
 class Result extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
+    this.state = {
+      lastCurrency: '',
+      currencyData: {},
+      isLoading: false,
+      hasError: false,
+    }
+
+    this.handleCurrencyChange = this.handleCurrencyChange.bind(this);
   }
+
+  componentDidMount() {
+    this.handleCurrencyChange();
+  }
+  componentDidUpdate() {
+    if(this.state.lastCurrency !== this.props.currency) 
+      this.handleCurrencyChange();
+  }
+
+  handleCurrencyChange() {
+    this.setState({thisisLoading: true})
+
+    fetch(_URL + this.props.currency)
+      .then(res => res.json())
+      .then(data => {this.setState({currencyData: data.rates, isLoading: false})});
+
+    this.setState({lastCurrency: this.props.currency})
+  }
+  
   render() {
-
-    //need to handle NaN input
-
-    return(
-      <div className="row">
-        <div className="col-3"></div>
-        <div className="col-6">
-          {
-            Object.entries(this.props.result).map(([key,value])=> (<div className="row text-center">
-              <div className="col" key={key}>
-                {key}
-              </div> 
-              <div className="col">
-                {(this.props.bv * value).toFixed(2)}
-              </div>
-              </div>
-            ))
-          }
+    if(this.state.isLoading) 
+      return (<div>Data Loading ...</div>)
+    else
+      return(
+        <div className="row">
+          <div className="col-3"></div>
+          <div className="col-6">
+            {
+              Object.entries(this.state.currencyData).map(([key,value])=>( 
+                <div className="row">
+                  <div className="col text-right" key={key}>
+                    {key}
+                  </div> 
+                  <div className="col text-left">
+                    {(this.props.bv * value).toFixed(2)}
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+          <div className="col-3"></div>
         </div>
-        <div className="col-3"></div>
-      </div>
-    )
+      )
   }
 }
 
