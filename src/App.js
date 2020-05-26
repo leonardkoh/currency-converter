@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {FullCurrencyName, CurrencyList} from './Currency';
+import {FullCurrencyName, CurrencyList, FlagIcon} from './Currency';
 
 class App extends React.Component {
   constructor(props){
@@ -135,7 +135,7 @@ class Result extends React.Component {
               Object.entries(this.state.currencyData).map(([key,value])=>( 
                 <div className="row">
                   <div className="col text-right" key={key}>
-                    {key}
+                    {key} <img src={FlagIcon[key]} className="image-fluid" alt={FullCurrencyName[key]} />
                   </div> 
                   <div className="col text-left">
                     {(this.props.bv * value).toFixed(2)}
