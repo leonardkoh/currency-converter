@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {FullCurrencyName, CurrencyList, FlagIcon} from './Currency';
+import {Currency, CurrencyList} from './Currency';
 
 class App extends React.Component {
   constructor(props){
@@ -33,7 +33,7 @@ class App extends React.Component {
               <BaseCurrency currencyChange={this.handleCurrencyChange} currency={this.state.baseCurrency}/> 
             </div>
             <div className="mb-3"></div>
-            <Result bv={this.state.baseValue} currency={this.state.baseCurrency}/>
+            <Result baseValue={this.state.baseValue} currency={this.state.baseCurrency}/>
         </header>
       </div>
     )
@@ -129,22 +129,22 @@ class Result extends React.Component {
     else
       return(
         <div className="row">
-          <div className="col-3"></div>
-          <div className="col-6">
+          <div className="col-md-3"></div>
+          <div className="col-md-6">
             {
               Object.entries(this.state.currencyData).map(([key,value])=>( 
-                <div className="row">
+                <div className="row  d-flex align-items-center">
                   <div className="col text-right" key={key}>
-                    {key} <img src={FlagIcon[key]} className="image-fluid" alt={FullCurrencyName[key]} />
+                    {key} <img src={Currency[key][1]} className="" alt={Currency[key][1]} />
                   </div> 
                   <div className="col text-left">
-                    {(this.props.bv * value).toFixed(2)}
+                    {Currency[key][2]} {(this.props.baseValue * value).toFixed(2)}
                   </div>
                 </div>
               ))
             }
           </div>
-          <div className="col-3"></div>
+          <div className="col-md-3"></div>
         </div>
       )
   }
