@@ -25,7 +25,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <header className="AppHeader pt-5">
+        <header className="pt-5">
           <h1 className="pb-3">Currency Converter</h1>
             <div className="row justify-content-center">
               <BaseAmount baseValue={this.handleValueChange} />
@@ -135,10 +135,10 @@ class Result extends React.Component {
               Object.entries(this.state.currencyData).map(([key,value])=>( 
                 <div className="row  d-flex align-items-center">
                   <div className="col text-right" key={key}>
-                    {key} <img src={Currency[key][1]} className="" alt={Currency[key][1]} />
+                    {key} ({Currency[key][2]}) <img src={Currency[key][1]} className="" alt={Currency[key][1]} />
                   </div> 
                   <div className="col text-left">
-                    {Currency[key][2]} {(this.props.baseValue * value).toFixed(2)}
+                    {(this.props.baseValue * value).toFixed(2)}
                   </div>
                 </div>
               ))

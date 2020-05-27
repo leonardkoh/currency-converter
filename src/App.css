@@ -1,15 +1,14 @@
-.App {
-  text-align: center ;
-}
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
-.AppHeader {
+.App {
+  font-family: 'Lato', sans-serif;
+  text-align: center ;
   background-color: #282c34;
   color: white;
 }
 
 h1 {
   font-size: 2rem;
-  font-weight: 400;
 }
 
 li {
@@ -17,5 +16,5 @@ li {
 }
 
 img {
-  width: 15%;
+  width: 14%;
 }
